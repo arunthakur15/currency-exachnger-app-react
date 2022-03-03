@@ -1,7 +1,7 @@
 import React from "react";
 import logo from '../../assets/images/logo.png';
 import Button from '../form-items/buttons/Button';
-import './Header.module.scss';
+import './Header.scss';
 import { Link } from "react-router-dom";
 
 export default function Header() {

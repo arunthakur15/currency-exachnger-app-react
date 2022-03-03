@@ -1,4 +1,4 @@
-import './Input.module.scss';
+import './Input.scss';
 
 export default function Input({type, value, setValue, title}) {
     return (

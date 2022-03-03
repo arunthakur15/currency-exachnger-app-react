@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './ConverterPanel.module.scss'
+import './ConverterPanel.scss'
 import Input from "../form-items/input/Input";
 import Select from "../form-items/select/Select";
 import swap from '../../assets/images/arrow.png';

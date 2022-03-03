@@ -1,4 +1,4 @@
-import './Select.module.scss'
+import './Select.scss'
 
 export default function Select({title,value,setValue,data}) {
     return(
