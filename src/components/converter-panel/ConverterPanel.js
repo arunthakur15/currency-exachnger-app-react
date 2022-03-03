@@ -3,17 +3,33 @@ import './ConverterPanel.scss'
 import Input from "../form-items/input/Input";
 import Select from "../form-items/select/Select";
 import swap from '../../assets/images/arrow.png';
-import Button from "../form-items/buttons/Button";
+import Button from '../form-items/buttons/Button';
+import CurrencyExchangeService from '../../api/currency-exchange-service';
 
-export default function ConverterPanel({ data }) {
-    let dataToSelect = data ? data : ['EUR','USD','GBP'];
-    const setToVal = dataToSelect.length > 2 ? 'USD' : dataToSelect[1];
+export default function ConverterPanel({ data, showMore }) {
+    const [currencyList, setCurrencyList] = useState(['EUR','USD']); 
     const [amount, setAmount] = useState(25);
-    const [fromCur, setFromCur] = useState(dataToSelect[0]);
-    const [toCur, setToCur] = useState(setToVal);
+    const [fromCur, setFromCur] = useState('EUR');
+    const [toCur, setToCur] = useState('USD');
+    const [rate, setRate] = useState(1);
+    const curExService = new CurrencyExchangeService();
+    
+    useEffect(() => {   
+        setFromCur(data.from);
+        setToCur(data.to);     
+        curExService.getAllCurrencies(fromCur).then(res => {
+            let currencyList = Object.keys(res.results);
+            currencyList.push(fromCur);
+            setCurrencyList(currencyList);
+        });
+    },[data]);
+
     useEffect(() => {
-        setToCur(setToVal);
-    },[setToVal]);
+        curExService.getRate(fromCur,toCur).then((res) => {
+            setRate(res.result[Object.keys(res.result)]);
+        });
+    }, [amount, fromCur, toCur]);
+
     return (
         <div className="mt-2 p-2">
             <h2 className="title">
@@ -29,7 +45,7 @@ export default function ConverterPanel({ data }) {
                             title={'Amount'}
                         />
                         <div className="mt-2 text-center unit-rate">
-                            1.00 {fromCur} = XX.XX {toCur}
+                            1.00 {fromCur} = {rate.toFixed(4)} {toCur}
                         </div>
                     </div>
                     <div className="flex-fill">
@@ -39,7 +55,7 @@ export default function ConverterPanel({ data }) {
                                     title={'From Currency'}
                                     value={fromCur}
                                     setValue={setFromCur}
-                                    data={dataToSelect}
+                                    data={currencyList}
                                 />
                             </div>
                             <div className="flex-fill align-items-stretch img-center-box">
@@ -50,7 +66,7 @@ export default function ConverterPanel({ data }) {
                                     title={'To Currency'}
                                     value={toCur}
                                     setValue={setToCur}
-                                    data={dataToSelect}
+                                    data={currencyList}
                                 />
                             </div>
                         </div>
@@ -58,8 +74,8 @@ export default function ConverterPanel({ data }) {
                             <Button title='Convert' />
                         </div>
                         <div className="d-flex mt-2">
-                            <div className="flex-fill result">{amount * 1} {toCur}</div>
-                            {data ? '' : <div className="flex-fill pl-2 bt"><Button title={'More Details'} linkto={`details/${fromCur}_${toCur}`}/></div>}
+                            <div className="flex-fill result">{(amount * rate).toFixed(4)} {toCur}</div>
+                            {!showMore ? '' : <div className="flex-fill pl-2 bt"><Button title={'More Details'} linkto={`details/${fromCur}_${toCur}`} /></div>}
                         </div>
                     </div>
                 </div>
