@@ -12,7 +12,7 @@ class CurrencyExchangeService {
         return await client.get(`/fetch-one?from=${from}&to=${to}&${api_key}`)
             .then((res) => {
                 return (res.data);
-            }).catch(({response}) => {
+            }).catch(({ response }) => {
                 alert(response.data.error);
             });
     }
@@ -21,7 +21,16 @@ class CurrencyExchangeService {
         return await client.get(`/fetch-all?from=${from}&${api_key}`)
             .then((res) => {
                 return (res.data);
-            }).catch(({response}) => {
+            }).catch(({ response }) => {
+                alert(response.data.error);
+            });
+    }
+
+    async getMultiCurrencyRates(from,to) {
+        return await client.get(`/fetch-multi?from=${from}&to=${to}&${api_key}`)
+            .then((res) => {
+                return (res.data);
+            }).catch(({ response }) => {
                 alert(response.data.error);
             });
     }

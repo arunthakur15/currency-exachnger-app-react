@@ -6,7 +6,7 @@ import swap from '../../assets/images/arrow.png';
 import Button from '../form-items/buttons/Button';
 import CurrencyExchangeService from '../../api/currency-exchange-service';
 
-export default function ConverterPanel({ data, showMore }) {
+export default function ConverterPanel({ data, showMore, setConvertData }) {
     const [currencyList, setCurrencyList] = useState(['EUR', 'USD']);
     const [amount, setAmount] = useState(25);
     const [fromCur, setFromCur] = useState('EUR');
@@ -30,17 +30,21 @@ export default function ConverterPanel({ data, showMore }) {
             setRate(res.result[Object.keys(res.result)]);
         });
         setResult(null);
+        setConvertData && setConvertData({
+            amount: amount,
+            fromCur: fromCur
+        });
     }, [amount, fromCur, toCur]);
 
     return (
-        <div className="mt-2 p-2">
+        <div className="mt-2 p-2 converter-panel">
             <h2 className="title">
-                {data ? data[0] : 'Currency Exchanger'}
+                {!showMore ? data.from : 'Currency Exchanger'}
             </h2>
             <form className="mt-3" onSubmit={(e) => {
-                    e.preventDefault();
-                    setResult((amount * rate).toFixed(4))
-                }
+                e.preventDefault();
+                setResult((amount * rate).toFixed(4))
+            }
             }>
                 <div className="d-flex">
                     <div className="flex-fill pr-3">
