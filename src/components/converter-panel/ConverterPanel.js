@@ -7,27 +7,29 @@ import Button from '../form-items/buttons/Button';
 import CurrencyExchangeService from '../../api/currency-exchange-service';
 
 export default function ConverterPanel({ data, showMore }) {
-    const [currencyList, setCurrencyList] = useState(['EUR','USD']); 
+    const [currencyList, setCurrencyList] = useState(['EUR', 'USD']);
     const [amount, setAmount] = useState(25);
     const [fromCur, setFromCur] = useState('EUR');
     const [toCur, setToCur] = useState('USD');
     const [rate, setRate] = useState(1);
+    const [result, setResult] = useState(null);
     const curExService = new CurrencyExchangeService();
-    
-    useEffect(() => {   
+
+    useEffect(() => {
         setFromCur(data.from);
-        setToCur(data.to);     
+        setToCur(data.to);
         curExService.getAllCurrencies(fromCur).then(res => {
             let currencyList = Object.keys(res.results);
             currencyList.push(fromCur);
             setCurrencyList(currencyList);
         });
-    },[data]);
+    }, [data]);
 
     useEffect(() => {
-        curExService.getRate(fromCur,toCur).then((res) => {
+        curExService.getRate(fromCur, toCur).then((res) => {
             setRate(res.result[Object.keys(res.result)]);
         });
+        setResult(null);
     }, [amount, fromCur, toCur]);
 
     return (
@@ -35,7 +37,11 @@ export default function ConverterPanel({ data, showMore }) {
             <h2 className="title">
                 {data ? data[0] : 'Currency Exchanger'}
             </h2>
-            <form className="mt-3">
+            <form className="mt-3" onSubmit={(e) => {
+                    e.preventDefault();
+                    setResult((amount * rate).toFixed(4))
+                }
+            }>
                 <div className="d-flex">
                     <div className="flex-fill pr-3">
                         <Input
@@ -71,10 +77,10 @@ export default function ConverterPanel({ data, showMore }) {
                             </div>
                         </div>
                         <div className="flex-fill mt-2">
-                            <Button title='Convert' />
+                            <Button type='submit' title='Convert' />
                         </div>
                         <div className="d-flex mt-2">
-                            <div className="flex-fill result">{(amount * rate).toFixed(4)} {toCur}</div>
+                            <div className="flex-fill result">{result ? `${result} ${toCur}` : 'Not calculated'}</div>
                             {!showMore ? '' : <div className="flex-fill pl-2 bt"><Button title={'More Details'} linkto={`details/${fromCur}_${toCur}`} /></div>}
                         </div>
                     </div>

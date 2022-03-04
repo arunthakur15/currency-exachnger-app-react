@@ -1,14 +1,14 @@
 import './Button.scss';
 import { Link } from "react-router-dom";
 
-export default function Button({title, linkto}) {
+export default function Button({title, linkto, type}) {
     if(linkto){
         return(
-            <button className="mr-1 button"><Link to={linkto}>{title}</Link></button>
+            <Link to={linkto}><button className="mr-1 button">{title}</button></Link>
         )
     }else {
         return(
-            <button className="mr-1 button">{title}</button>
+            <button type={type} className="mr-1 button">{title}</button>
         )
     }
 }
