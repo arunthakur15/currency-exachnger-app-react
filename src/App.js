@@ -7,7 +7,7 @@ import Layout from './Layout';
 
 function App() {
     return (
-      <>
+      <div className='container pr-0 pl-0'>
         <BrowserRouter>
         <Routes>
         <Route path='/' element={<Layout />}>
@@ -17,7 +17,7 @@ function App() {
         </Routes>
           
         </BrowserRouter>
-      </>
+      </div>
 
     )
 }
